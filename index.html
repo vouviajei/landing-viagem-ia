@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roteiro Personalizado com IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #f9fafb; color: #1f2937; }
+    .container { max-width: 800px; margin: auto; padding: 2rem; }
+    header { text-align: center; margin-bottom: 3rem; }
+    h1 { font-size: 2rem; font-weight: 700; }
+    p { color: #6b7280; margin-top: 0.5rem; }
+    form { background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    input, select { width: 100%; padding: 0.75rem; margin-bottom: 1.5rem; border: 1px solid #d1d5db; border-radius: 6px; }
+    button { background: #2563eb; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    .footer { text-align: center; margin-top: 3rem; font-size: 0.875rem; color: #9ca3af; }
+    .resultado { background: #fff; border-radius: 8px; padding: 2rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Seu Roteiro de Viagem Ideal, Criado com IA</h1>
+      <p>Informe os detalhes e receba um plano exclusivo com base no seu orçamento e estilo</p>
+    </header>
+
+    <form id="formularioRoteiro">
+      <label for="destino">Destino da viagem</label>
+      <input type="text" id="destino" name="destino" placeholder="Ex: Paris, Roma, Salvador" required>
+
+      <label for="dias">Quantos dias de viagem?</label>
+      <input type="number" id="dias" name="dias" placeholder="Ex: 5" required>
+
+      <label for="pessoas">Quantas pessoas?</label>
+      <input type="number" id="pessoas" name="pessoas" placeholder="Ex: 2" required>
+
+      <label for="orcamento">Orçamento total (R$)</label>
+      <input type="number" id="orcamento" name="orcamento" placeholder="Ex: 3000" required>
+
+      <label for="estilo">Estilo de viagem</label>
+      <select id="estilo" name="estilo">
+        <option value="">Selecione</option>
+        <option value="romântica">Romântica</option>
+        <option value="aventura">Aventura</option>
+        <option value="cultural">Cultural</option>
+        <option value="família">Família</option>
+        <option value="gastronômica">Gastronômica</option>
+      </select>
+
+      <button type="submit">Gerar meu plano personalizado</button>
+    </form>
+
+    <div id="resultado" class="resultado" style="display:none;"></div>
+
+    <p class="footer">© 2025 Seu Roteiro IA. Todos os direitos reservados.</p>
+  </div>
+
+  <script>
+    document.getElementById("formularioRoteiro").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const destino = document.getElementById("destino").value;
+      const dias = document.getElementById("dias").value;
+      const pessoas = document.getElementById("pessoas").value;
+      const orcamento = document.getElementById("orcamento").value;
+      const estilo = document.getElementById("estilo").value;
+
+      const resultado = document.getElementById("resultado");
+      resultado.style.display = "block";
+      resultado.innerHTML = "Gerando plano personalizado...";
+
+      try {
+        const response = await fetch("http://localhost:3001/api/roteiro", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ destino, dias, pessoas, orcamento, estilo })
+        });
+
+        const data = await response.json();
+        resultado.innerHTML = `<h2>Plano Gerado:</h2><p>${data.roteiro}</p>`;
+      } catch (error) {
+        resultado.innerHTML = "Erro ao gerar plano. Tente novamente mais tarde.";
+        console.error("Erro:", error);
+      }
+    });
+  </script>
+</body>
+</html>
